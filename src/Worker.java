@@ -49,10 +49,19 @@ public class Worker {
 				process();
 			}
 		});
+		Thread t2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				process();
+			}
+		});
 		
 		t1.start();
+		t2.start();
 		try {
 			t1.join(); // wait t1 to finish before the below lines can be implemented
+			t2.join();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,7 +74,7 @@ public class Worker {
 
 // Output:		
 //		Starting...
-//		Time take: 2683
-//		List1: 1000; List2: 1000
+//		Time take: 2682
+//		List1: 1610; List2: 1598
 	}
 }
