@@ -7,7 +7,7 @@ public class Worker {
 	private List<Integer> list2 = new ArrayList<>();
 	private Random random = new Random();
 
-	public void stageOne() {
+	public synchronized void stageOne() {
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
@@ -18,7 +18,7 @@ public class Worker {
 		
 	}
 
-	public void stageTwo() {
+	public synchronized void stageTwo() {
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
@@ -74,7 +74,7 @@ public class Worker {
 
 // Output:		
 //		Starting...
-//		Time take: 2682
-//		List1: 1610; List2: 1598
+//		Time take: 5359
+//		List1: 2000; List2: 2000
 	}
 }
