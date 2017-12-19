@@ -18,14 +18,20 @@ public class Runner {
 
     public void firstThread() throws InterruptedException {
         lock.lock();
-        increment();
-        lock.unlock();  // not a good practice: unlock() will fail to call if increment() throws an exception
+        try {
+            increment();            
+        } finally {
+            lock.unlock();  // ensure unlock() will always be called
+        }
     }
 
     public void secondThread() throws InterruptedException {
         lock.lock();
-        increment();
-        lock.unlock();  // not a good practice: unlock() will fail to call if increment() throws an exception
+        try {
+            increment();            
+        } finally {
+            lock.unlock();  // ensure unlock() will always be called
+        }
     }
 
     public void finished() {
