@@ -1,3 +1,5 @@
+import java.util.Scanner;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -9,7 +11,9 @@ public class Runner {
     //  and then you have to unlock it (the same thread) by the same number of times
     //
     // it works like synchronized block, but in some circumstances it has some advantages
-    //
+    // 
+    private Condition condition = lock.newCondition();
+    
     private void increment() {
         for (int a = 0; a < 10000; a++) {
             count++;
@@ -18,6 +22,10 @@ public class Runner {
 
     public void firstThread() throws InterruptedException {
         lock.lock();
+        System.out.println("Waiting...");
+        condition.await();  // like wait()
+        
+        System.out.println("Woken up!");
         try {
             increment();            
         } finally {
@@ -26,7 +34,14 @@ public class Runner {
     }
 
     public void secondThread() throws InterruptedException {
+        Thread.sleep(1000);
+        
         lock.lock();
+        System.out.println("Press the return key!");
+        new Scanner(System.in).nextLine();
+        System.out.println("Got return key!");
+        
+        condition.signal(); // like notify(), but you still have to unlock() since it won't relinquish the lock
         try {
             increment();            
         } finally {
@@ -37,4 +52,13 @@ public class Runner {
     public void finished() {
         System.out.println("Count is: " + count);
     }
+    
+// Output:
+//    Waiting...
+//    Press the return key!
+//
+//    Got return key!
+//    Woken up!
+//    Count is: 20000
+
 }
