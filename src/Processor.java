@@ -24,6 +24,9 @@ public class Processor {
             // notify() can only be called within a synchronized code block
             // notify() doesn't handle over control of the lock unlike wait(), 
             // the lock is relinquish when synchronized block is completed.
+            
+            Thread.sleep(5000); // the lock won't relinquish after notify() is called
+            // the lock will be relinquish after the thread is leaving the synchronized block
         }
         
         scanner.close();
