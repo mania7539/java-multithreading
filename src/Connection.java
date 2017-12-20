@@ -32,7 +32,8 @@ public class Connection {
         try {
             doConnect();
         } finally {
-            semaphore.release();            
+            semaphore.release(); 
+            // Use finally to ensure the semaphore releases even when the exception occurs 
         }
     }
     
