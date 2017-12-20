@@ -11,7 +11,10 @@ public class Runner {
     
     /**
      * A kind of method that can call locks in any order.
-     * It will unlock all locks and lock them with the same order
+     * It will unlock all locks and lock them with the same order, or it will loop again.
+     * 
+     * When locks are locked in the same order which is defined in this function, 
+     *  the loop will end, and the function will return;
      */
     private void acquireLocks(Lock firstLock, Lock secondLock) throws InterruptedException {
         while (true) {
@@ -22,6 +25,11 @@ public class Runner {
             try {
                 gotFirstLock = firstLock.tryLock();
                 gotSecondLock = secondLock.tryLock();
+                // All of above which is successfully locked, should be unlocked in the 1st iteration.
+                //  The 2nd iteration will force the locks to be locked in the same order.
+                //
+                // If another thread is using this function before the current thread leaves, 
+                //  it will be kept in the loop until the locks are unlocked.
                 
             } finally {
                 if (gotFirstLock && gotSecondLock) {
@@ -35,6 +43,8 @@ public class Runner {
                 if (gotSecondLock) {
                     secondLock.unlock();
                 }
+                
+                if (!gotFirstLock && !gotSecondLock) {}
             }
             
             // Locks not acquired
