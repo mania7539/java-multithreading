@@ -3,7 +3,16 @@ import java.util.concurrent.Semaphore;
 public class Connection {
     private static Connection instance = new Connection();
     private int connections = 0;
-    private Semaphore semaphore = new Semaphore(10);
+    private boolean fairness = true;
+    private Semaphore semaphore = new Semaphore(10, fairness);
+    // fairness is "true" in default
+    //  it means that the the first thread calls Semaphore.acquire() 
+    //  is guaranteed to get the lock, 
+    //  while fairness == "false" will be faster in performance but not guaranteed.
+    // So usually we want fairness to be "true".
+    
+//    private Semaphore semaphore = new Semaphore(10);
+    // the fairness is set to "false"
     
     private Connection() {
         
