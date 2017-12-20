@@ -1,17 +1,25 @@
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class App {
 	public static void main(String[] args) throws InterruptedException {
-		Semaphore semaphore = new Semaphore(1);   // use 0 or 1 for permits would be reasonable
-		
-		semaphore.release();  // semaphore.availablePermits() +1
-		semaphore.acquire();  // semaphore.availablePermits() -1
-		// If semaphore.availablePermits() == 0, acquire() would wait until a permit is released
-		
-		System.out.println("Available permits: " + semaphore.availablePermits());
+	    ExecutorService executor = Executors.newCachedThreadPool();
+	    // Executors.newCachedThreadPool() will create a new thread every time you call submit()
+	    //     and it will try to reuse threads.
+	    
+	    for (int a=0; a<200; a++) {
+	        executor.submit(new Runnable() { 
+                @Override
+                public void run() {
+                    Connection.getInstance().connect();
+                    
+                }
+            });
+	    }
+	    
+	    executor.shutdown();
+	    executor.awaitTermination(1, TimeUnit.DAYS);
 	}
-	
-// Output:
-//	Available permits: 1
 
 }
