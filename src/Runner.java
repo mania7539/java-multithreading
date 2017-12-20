@@ -9,12 +9,44 @@ public class Runner {
     private Lock lock1 = new ReentrantLock();
     private Lock lock2 = new ReentrantLock();
     
+    /**
+     * A kind of method that can call locks in any order.
+     * It will unlock all locks and lock them with the same order
+     */
+    private void acquireLocks(Lock firstLock, Lock secondLock) throws InterruptedException {
+        while (true) {
+            // Acquire locks
+            boolean gotFirstLock = false;
+            boolean gotSecondLock = false;
+            
+            try {
+                gotFirstLock = firstLock.tryLock();
+                gotSecondLock = secondLock.tryLock();
+                
+            } finally {
+                if (gotFirstLock && gotSecondLock) {
+                    return;
+                }
+                
+                if (gotFirstLock) {
+                    firstLock.unlock();
+                }
+                
+                if (gotSecondLock) {
+                    secondLock.unlock();
+                }
+            }
+            
+            // Locks not acquired
+            Thread.sleep(1);
+        }
+    }
+    
     public void firstThread() throws InterruptedException {
         Random random = new Random();
 
         for (int a = 0; a < 10000; a++) {
-            lock1.lock();
-            lock2.lock();
+            acquireLocks(lock1, lock2);
             try {
                 Account.transfer(account1, account2, random.nextInt(100));                
             } finally {
@@ -28,8 +60,7 @@ public class Runner {
         Random random = new Random();
 
         for (int a = 0; a < 10000; a++) {
-            lock2.lock();
-            lock1.lock();
+            acquireLocks(lock2, lock1);
             try {
                 Account.transfer(account2, account1, random.nextInt(100));                
             } finally {
@@ -47,5 +78,7 @@ public class Runner {
     }
 
 // Output:
-//    ... (the console just stuck)
+//    Account 1 balance: 17227
+//    Account 2 balance: 2773
+//    Total balance: 20000
 }
