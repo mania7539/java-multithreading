@@ -28,8 +28,8 @@ public class Runner {
         Random random = new Random();
 
         for (int a = 0; a < 10000; a++) {
-            lock1.lock();
             lock2.lock();
+            lock1.lock();
             try {
                 Account.transfer(account2, account1, random.nextInt(100));                
             } finally {
@@ -47,7 +47,5 @@ public class Runner {
     }
 
 // Output:
-//    Account 1 balance: 8079
-//    Account 2 balance: 11921
-//    Total balance: 20000
+//    ... (the console just stuck)
 }
