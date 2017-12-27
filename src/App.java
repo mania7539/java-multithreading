@@ -12,6 +12,11 @@ public class App {
                 
                 // 1E6 === 1*10^6 === (1 multiply 10 to the power of 6)
                 for (int i=0; i<1E8; i++) {
+                    if (Thread.currentThread().interrupted()) {
+                        System.out.println("Interrupted!");
+                        break;
+                    }
+                    
                     Math.sin(random.nextDouble());
                     // 1E8 iterations of sin() will take about 5 seconds 
                 }
@@ -37,6 +42,7 @@ public class App {
 	
 // output:
 //	Starting.
+//	Interrupted!
 //	Finished.
 
 }
