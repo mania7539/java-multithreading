@@ -12,12 +12,13 @@ public class App {
 		
 		// we want to get the time (Integer) as the thread.sleep returns
 		    // you can also use ArrayList<Future<Integer>> to store the entire submit() results
-		Future<Integer> future = executor.submit(new Callable<Integer>() {
-
+		    // if you don't want to get the time result, you can use ? and Void instead of Integer
+		Future<?> future = executor.submit(new Callable<Void>() {
+		    
             @Override
-            public Integer call() throws Exception {
+            public Void call() throws Exception {
                 Random random = new Random();
-                int duration = random.nextInt(4000) + 2000;
+                int duration = random.nextInt(4000);
                 
                 if (duration > 2000) {
                     throw new IOException("Sleeping for too long.");
@@ -33,7 +34,7 @@ public class App {
                 
 
                 System.out.println("Finished.");
-                return duration;    
+                return null;    
             }
 		    
 		});
@@ -54,10 +55,9 @@ public class App {
         }
 	}
 	
-// output1:
-//	java.io.IOException: Sleeping for too long.
-	
-// output2:
-//	Sleeping for too long.	
+// output:
+//	Starting...
+//	Finished.
+//	Result is: null
 	
 }
