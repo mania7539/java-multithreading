@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -16,7 +17,11 @@ public class App {
             @Override
             public Integer call() throws Exception {
                 Random random = new Random();
-                int duration = random.nextInt(4000);
+                int duration = random.nextInt(4000) + 2000;
+                
+                if (duration > 2000) {
+                    throw new IOException("Sleeping for too long.");
+                }
                 
                 System.out.println("Starting...");
                 
@@ -41,12 +46,18 @@ public class App {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
-            e.printStackTrace();
+//            System.out.println(e.getMessage()); // output1
+            
+            IOException exception = (IOException) e.getCause(); //output2
+            System.out.println(exception.getMessage());
+            // throw IOException will be catch by listening to ExecutionException 
         }
 	}
 	
-// output:
-//	Starting...
-//	Finished.
-//	Result is: 581
+// output1:
+//	java.io.IOException: Sleeping for too long.
+	
+// output2:
+//	Sleeping for too long.	
+	
 }
